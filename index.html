@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Netflix Data Analyzer</title>
+	<meta charset="UTF-8" />
+	<script src="https://cdn.jsdelivr.net/npm/danfojs@1.1.2/lib/bundle.min.js"></script>
+    <script> var parcelRequire </script>
+</head>
+
+<body>
+	<div style="text-align: center; font-size: x-large; margin: 40px 0;">The dataset used in this project is the Netflix dataset from Kaggle.<br>The dataset contains information about movies and TV shows available on Netflix as of 2021.</div>
+
+    <div><h1>1. Displaying the dataset</h1></div>
+	<div style="height: 70vh;" id="data"></div>
+
+    <div><h1>2. Null values</h1></div>
+	<div><h2>Count of NaN values for each column</h2></div>
+	<div><textarea id="null_table" style="width: 100%; height: 320px; overflow-wrap: normal; overflow-x: scroll;" disabled> </textarea></div>
+	<div style="height: 70vh;" id="null"></div>
+	
+	<div><h1>3. Handling missing values</h1></div>
+	<div><h2>Count of NaN values for each column after dealing with missing values</h2></div>
+	<div><textarea id="no_null" style="width: 100%; height: 320px; overflow-wrap: normal; overflow-x: scroll;" disabled> </textarea></div>
+	
+	<div><h1>4. Adding new column</h1></div>
+	<div style="height: 70vh;" id="content_year"></div>
+
+	<div><h1>5. Plot type of content</h1></div>
+	<div style="height: 70vh;" id="content_type_bar_plot"></div>
+	
+	<div><h1>6. Growth in content over the years</h1></div>
+	<div style="height: 70vh;" id="line_chart"></div>
+	
+	<div><h1>7. Top 10 oldest movies on Netflix</h1></div>
+	<div><textarea id="top_movies" style="width: 100%; height: 320px; overflow-wrap: normal; overflow-x: scroll;" disabled> </textarea></div>
+	
+	<div><h1>8. Top 10 oldest TV shows on Netflix</h1></div>
+	<div><textarea id="top_tv_shows" style="width: 100%; height: 320px; overflow-wrap: normal; overflow-x: scroll;" disabled> </textarea></div>
+	
+	<div><h1>9. Movie duration histogram</h1></div>
+	<div style="height: 70vh;" id="movie_duration"></div>
+	
+	<div><h1>10. Seasons length bar plot</h1></div>
+	<div style="height: 70vh;" id="tv_duration"></div>
+
+	<div><h1>11. Ratings of the content</h1></div>
+	<div style="height: 70vh;" id="plot_ratings"></div>
+
+	<script type="module" src="script.js">
+	</script>
+</body>
+
+</html>
