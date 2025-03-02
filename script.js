@@ -216,6 +216,116 @@ function plotRatings() {
     });
 }
 
+/**
+ * Plot top 10 countries by content production
+ */
+function plotCountryProduction() {
+    let country_counts = df["country"].valueCounts().head(10);
+
+    country_counts.plot("country_production").bar({
+        layout: {
+            title: "Top 10 countries by content production",
+            xaxis: {
+                title: 'Country'
+            },
+            yaxis: {
+                title: 'Number of titles'
+            }
+        }
+    });
+}
+
+/**
+ * Plot content genres distribution
+ */
+function plotGenresDistribution() {
+    let all_genres = [];
+
+    df["listed_in"].values.forEach(genreList => {
+        if (genreList) {
+            const genres = genreList.split(',').map(g => g.trim());
+            all_genres.push(...genres);
+        }
+    });
+
+    let genres_df = new dfd.Series(all_genres);
+    let genre_counts = genres_df.valueCounts().head(15);
+
+    genre_counts.plot("genres_distribution").bar({
+        layout: {
+            title: "Top 15 content genres distribution",
+            xaxis: {
+                title: 'Genres'
+            },
+            yaxis: {
+                title: 'Count'
+            }
+        }
+    });
+}
+
+/**
+ * Plot directors with most content
+ */
+function plotTopDirectors() {
+    // Filter out entries with 'Unknown' director
+    let directors_df = df.loc({
+        rows: df["director"].ne("Unknown")
+    });
+
+    let director_counts = directors_df["director"].valueCounts().head(10);
+
+    director_counts.plot("top_directors").bar({
+        layout: {
+            title: "Top 10 directors with most content",
+            xaxis: {
+                title: 'Director'
+            },
+            yaxis: {
+                title: 'Number of titles'
+            }
+        }
+    });
+}
+
+/**
+ * Plot monthly content addition trends
+ */
+function plotMonthlyTrends() {
+    df.addColumn("month_added", df["date_added"].dt.month(), { inplace: true });
+
+    let month_grp = df.groupby(["month_added", "type"]);
+    let month_count = month_grp.col(["type"]).count();
+
+    let movie_month = month_count.query(month_count["type"].str.includes("Movie"));
+    let tv_month = month_count.query(month_count["type"].str.includes("TV Show"));
+
+    let merge_month = dfd.merge({ left: movie_month, right: tv_month, on: ["month_added"], how: "outer" });
+    merge_month.setIndex({ column: "month_added", inplace: true });
+    merge_month = merge_month.rename({ type_count: "Movies", type_count_1: "TV Shows" });
+    merge_month = merge_month.fillNa(0);
+
+    const month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let month_indices = Array.from({ length: 12 }, (_, i) => i + 1);
+
+    merge_month.plot("monthly_trends").bar({
+        config: {
+            columns: ["Movies", "TV Shows"]
+        },
+        layout: {
+            title: "Monthly content addition trends",
+            xaxis: {
+                title: 'Month',
+                tickvals: month_indices,
+                ticktext: month_names
+            },
+            yaxis: {
+                title: 'Number of titles added'
+            }
+        }
+    });
+}
+
 dfd.readCSV(csvData)
     .then(data => {
         df = data;
@@ -229,6 +339,10 @@ dfd.readCSV(csvData)
         showTop10Oldest();
         plotDurations();
         plotRatings();
+        plotCountryProduction();
+        plotGenresDistribution();
+        plotTopDirectors();
+        plotMonthlyTrends();
     }).catch(err => {
         console.log(err);
     });
